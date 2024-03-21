@@ -390,7 +390,13 @@ class AnsibleVMwareTurboMode:
         self.loop.run_forever()
 
     def stop(self):
-        os.unlink(self.socket_path)
+        try:
+            os.unlink(self.socket_path)
+        except (FileNotFoundError):
+            if debug_mode:
+                print(  # pylint: disable=ansible-bad-function
+                    f"-----\n{self.socket_path} does not exists, skip unlink "
+                )
         self.loop.stop()
 
 
